@@ -8,6 +8,6 @@ import java.util.Optional;
 @Repository
 public interface MyEntityRepository extends CrudRepository<MyEntity, Integer> {
 
-    Optional<MyEntity> findByIndex1AndIndex2(int index1, int index2);
+    Optional<MyEntity> findByIndex1(int index1);
 
 }
