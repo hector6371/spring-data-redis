@@ -25,6 +25,9 @@ public class MyController {
     @GetMapping( "/my-endpoint")
     public ResponseEntity<?> myEndpoint () {
         MyEntity myEntity = createEntity();
+        myEntityRepository.save(myEntity);//save it for the first time after creation
+
+        logger.info("STARTED");
 
         for (int i = 0; i < 100; i++){
             new Thread(){
@@ -32,17 +35,19 @@ public class MyController {
                 public void run() {
                     super.run();
                     myEntity.setAttribute1("attr1-modified");
-                    myEntityRepository.save(myEntity);
+                    myEntityRepository.save(myEntity); //updating a value in redis
 
                     Optional<MyEntity> optionalMyEntity = myEntityRepository.findByIndex1AndIndex2(1, 2);
-                    if (!optionalMyEntity.isPresent()){
+                    if (optionalMyEntity.isPresent()) {
+                        logger.info("found");
+                    }else{
                         logger.warning("NOT FOUND");
                     }
                 }
             }.start();
 
         }
-        logger.info("STARTED");
+
         return ResponseEntity.noContent().build();
     }
 
